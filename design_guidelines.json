@@ -1,0 +1,162 @@
+{
+  "identity": {
+    "persona": "E1 - The Anti-AI Designer",
+    "mission": "Create a 'Flow State' task orchestrator that feels like a Zen garden for productivity. Rejection of standard SaaS templates.",
+    "core_principles": [
+      "Fusion: Swiss Typography x Organic Softness",
+      "Emotion: Calm, Focused, Efficient",
+      "Content: The Task is the Hero",
+      "Negative Space: Aggressive use of whitespace"
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Manrope, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h2": "text-3xl font-semibold tracking-tight",
+      "h3": "text-2xl font-medium",
+      "body_lg": "text-lg leading-relaxed",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm font-medium tracking-wide uppercase"
+    },
+    "imports": [
+      "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    ]
+  },
+  "colors": {
+    "theme_strategy": "Soft Utility",
+    "palette": {
+      "light": {
+        "background": "#FAFAFA",
+        "surface": "#FFFFFF",
+        "surface_highlight": "#F4F4F5",
+        "border": "#E4E4E7",
+        "text_primary": "#18181B",
+        "text_secondary": "#71717A"
+      },
+      "dark": {
+        "background": "#09090B",
+        "surface": "#18181B",
+        "surface_highlight": "#27272A",
+        "border": "#27272A",
+        "text_primary": "#FAFAFA",
+        "text_secondary": "#A1A1AA"
+      },
+      "brand": {
+        "primary": "#6366F1",
+        "primary_hover": "#4F46E5",
+        "accent": "#818CF8"
+      },
+      "semantic": {
+        "work": "#3B82F6",
+        "health": "#10B981",
+        "meeting": "#F59E0B",
+        "development": "#8B5CF6",
+        "priority_high": "#EF4444",
+        "priority_medium": "#F97316",
+        "priority_low": "#3B82F6"
+      }
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-8 max-w-[1600px] mx-auto",
+      "sidebar": "hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-border bg-background/80 backdrop-blur-xl z-50",
+      "main_content": "md:pl-64 min-h-screen transition-all duration-300"
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-10",
+      "card_padding": "p-6",
+      "section_gap": "gap-8"
+    }
+  },
+  "components": {
+    "InputArea": {
+      "concept": "The AI Brain",
+      "style": "bg-surface shadow-xl shadow-indigo-500/10 border border-border rounded-2xl p-6 relative overflow-hidden",
+      "animation": "focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all duration-500",
+      "enhancement": "Add a subtle 'breathing' glow animation behind the input when AI is processing."
+    },
+    "TaskCard": {
+      "concept": "Minimalist Ticket",
+      "style": "group relative bg-surface hover:bg-surface_highlight border border-border hover:border-indigo-200 dark:hover:border-indigo-800 rounded-xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg",
+      "elements": {
+        "badge": "rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider",
+        "title": "font-medium text-text_primary group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+      }
+    },
+    "Sidebar": {
+      "concept": "Glass Command Center",
+      "style": "bg-background/80 backdrop-blur-xl border-r border-border",
+      "item_style": "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+    },
+    "StatsWidget": {
+      "concept": "Bento Box Metrics",
+      "style": "bg-surface border border-border rounded-xl p-6 flex flex-col items-start justify-between h-32 hover:border-indigo-500/30 transition-colors"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-white/20",
+    "shadows": "shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]",
+    "gradients": "bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30"
+  },
+  "motion": {
+    "library": "framer-motion",
+    "variants": {
+      "container": {
+        "hidden": { "opacity": 0 },
+        "show": {
+          "opacity": 1,
+          "transition": { "staggerChildren": 0.1 }
+        }
+      },
+      "item": {
+        "hidden": { "y": 20, "opacity": 0 },
+        "show": { "y": 0, "opacity": 1 }
+      }
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1516798705208-066b05ced1cd?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "category": "welcome_modal",
+        "description": "Minimalist workspace with book and armchair, conveying calm focus."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1707531210531-c3e335194ae8?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "category": "empty_state",
+        "description": "Abstract black and white design for empty task lists."
+      }
+    ],
+    "icons": "lucide-react"
+  },
+  "universal_guidelines": {
+    "general": [
+      "Avoid 'AI Slop' - generic centered layouts.",
+      "Use 'Manrope' for all Headings and 'Inter' for body.",
+      "Ensure Light/Dark mode toggling works seamlessly.",
+      "Use 'sonner' for all toast notifications.",
+      "Input Area must feel 'intelligent' - use animations to suggest AI processing."
+    ],
+    "accessibility": [
+      "Ensure text contrast meets APCA/WCAG AA standards.",
+      "All interactive elements must have focus states."
+    ],
+    "testing": [
+      "Add data-testid to all interactive elements (buttons, inputs, cards)."
+    ]
+  },
+  "instructions_to_main_agent": [
+    "1. Setup: Install 'lucide-react', 'framer-motion', 'sonner', 'clsx', 'tailwind-merge'.",
+    "2. Fonts: Add the Google Fonts import to 'index.css'.",
+    "3. Theme: Implement a 'ThemeProvider' context for light/dark mode persistence.",
+    "4. Layout: Create a responsive Sidebar (drawer on mobile, fixed on desktop).",
+    "5. Logic: Mock the Gemini API with a realistic delay and randomized categorization if actual API key is missing, or provide a clear place to input it.",
+    "6. Polish: Apply the 'Soft Utility' color palette defined above."
+  ]
+}
