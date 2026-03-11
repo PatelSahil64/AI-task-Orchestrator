@@ -10,3 +10,8 @@ for tailwincss :npm install -D tailwindcss
 for react plugins:npm install @vitejs/plugin-react --save-dev
 
 react router dom:npm install react react-dom
+
+if you want to login a spific mail as a admin then create a .env file REACT_APP_ADMIN_EMAIL='Your mail' and call it into your App.js 
+
+and same thing for your API key for security and API call in gemini.js
+
