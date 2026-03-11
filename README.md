@@ -15,3 +15,5 @@ if you want to login a spific mail as a admin then create a .env file REACT_APP_
 
 and same thing for your API key for security and API call in gemini.js
 
+
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/eded5854-1632-43b1-8b5b-587b72a2f458" />
