@@ -4,7 +4,6 @@ import { CheckCircle2, Circle, Trash2, Calendar, Sparkles, Pencil, Check, X as X
 
 const CATEGORY_STYLES = {
   Work: 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200/60 dark:border-blue-800/40',
-  Health: 'bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 border-green-200/60 dark:border-green-800/40',
   Meeting: 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/40',
   Development: 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200/60 dark:border-purple-800/40',
 };
@@ -75,8 +74,7 @@ function CountdownBadge({ deadline }) {
     </span>
   );
 }
-
-export default function TaskCard({ task, onToggle, onDelete, onEdit }) {
+export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly }) {
   const isCompleted = task.status === 'completed';
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.title);
@@ -100,10 +98,7 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit }) {
 
   return (
     <motion.div
-      data-testid={`task-card-${task.id}`}
-      variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
-      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
-      layout
+      // ... (keep existing motion properties)
       className={`group relative flex flex-col bg-card border rounded-xl p-5 transition-all duration-300 ${
         isCompleted
           ? 'border-border opacity-60'
@@ -111,26 +106,25 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit }) {
       }`}
     >
       {/* Action buttons */}
-      <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        {!isCompleted && !isEditing && (
+      {/* 1. HIDE ACTION BUTTONS IF READONLY */}
+      {!readOnly && (
+        <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {!isCompleted && !isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-950/40"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
-            data-testid={`edit-task-${task.id}`}
-            onClick={() => setIsEditing(true)}
-            aria-label="Edit task"
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-950/40 transition-all duration-200"
+            onClick={() => onDelete(task.id)}
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40"
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Trash2 className="w-3.5 h-3.5" />
           </button>
-        )}
-        <button
-          data-testid={`delete-task-${task.id}`}
-          onClick={() => onDelete(task.id)}
-          aria-label="Delete task"
-          className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-950/40 transition-all duration-200"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Badges */}
       <div className="flex items-center gap-2 mb-3 flex-wrap pr-14">
@@ -192,41 +186,44 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit }) {
         </p>
       )}
 
-      {task.shortSummary && !isCompleted && !isEditing && (
-        <div className="flex items-start gap-1.5 mb-3">
-          <Sparkles className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground italic leading-relaxed">
-            {task.shortSummary}
-          </p>
-        </div>
-      )}
+      {/* Change this section in TaskCard.jsx */}
+{task.originalRaw && !isCompleted && !isEditing && (
+  <div className="flex items-start gap-1.5 mb-3">
+    <Sparkles className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
+    <p className="text-xs text-muted-foreground italic leading-relaxed">
+      Note: {task.originalRaw}
+    </p>
+  </div>
+)}
 
       {/* Footer */}
+     {/* 2. UPDATED FOOTER WITH COUNTDOWN */}
       <div className="flex items-center justify-between mt-auto pt-3 border-t border-border gap-2 flex-wrap">
-        <div className="flex items-center gap-2 flex-wrap">
+  <div className="flex items-center gap-2 flex-wrap">
           {task.suggestedDeadline && task.suggestedDeadline !== 'TBD' && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Calendar className="w-3 h-3" />
-              {task.suggestedDeadline}
-            </span>
-          )}
-          {!isCompleted && <CountdownBadge deadline={task.suggestedDeadline} />}
-        </div>
+      <>
+      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+        <Calendar className="w-3 h-3" />
+        {task.suggestedDeadline}
+      </span>
+      
+      {/* The badge will now only show if a valid date is present */}
+      {!isCompleted && <CountdownBadge deadline={task.suggestedDeadline} />}
+    </>
+  )}
+</div>
 
-        <button
-          data-testid={`toggle-task-${task.id}`}
-          onClick={() => onToggle(task.id)}
-          className={`flex items-center gap-1.5 text-xs font-semibold transition-all duration-200 rounded-lg px-2.5 py-1.5 flex-shrink-0 ${
-            isCompleted
-              ? 'text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-950/30'
-              : 'text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30'
-          }`}
-        >
-          {isCompleted
-            ? <><CheckCircle2 className="w-4 h-4 text-green-500" /> Done</>
-            : <><Circle className="w-4 h-4" /> Mark done</>
-          }
-        </button>
+ {!readOnly && (
+          <button
+            onClick={() => onToggle(task.id)}
+            className={`flex items-center gap-1.5 text-xs font-semibold ...`}
+           >
+            {isCompleted
+              ? <><CheckCircle2 className="w-4 h-4 text-green-500" /> Done</>
+              : <><Circle className="w-4 h-4" /> Mark done</>
+            }
+          </button>
+        )}
       </div>
     </motion.div>
   );
