@@ -1,10 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-
 const PROMPT = (taskText) => `You are an expert Task Manager AI. Analyze the task below and return ONLY a valid JSON object with these exact fields:
 - "category": one of "Work", "Meeting", "Development"
 - "priority": "P1" (urgent/critical), "P2" (medium/important), or "P3" (low/nice-to-have)
-- "suggestedDeadline": a realistic deadline string like "Mar 15, 2026" based on urgency
+- "suggestedDeadline": a realistic deadline string like "Mar 15, 2026" ONLY if a date or timeframe is mentioned. If no date or urgency is implied, return null.
 - "shortSummary": a concise one-sentence summary (max 80 characters)
 
 Task: "${taskText.replace(/"/g, "'")}"
