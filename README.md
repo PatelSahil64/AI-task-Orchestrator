@@ -14,6 +14,7 @@ react router dom:npm install react react-dom
 if you want to login a spific mail as a admin then create a .env file REACT_APP_ADMIN_EMAIL='Your mail' and call it into your App.js 
 
 and same thing for your API key for security and API call in gemini.js
+
 Login Pgae
 
 <img width="1920" height="1020" alt="login new" src="https://github.com/user-attachments/assets/373bbe6d-2dea-4d00-bea1-242e266f9bd5" />
