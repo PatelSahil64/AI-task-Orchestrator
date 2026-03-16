@@ -4,6 +4,8 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { toast } from 'sonner';
 import { Brain, Sparkles, Tag, Clock, ShieldCheck, Moon, Sun } from 'lucide-react';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 const features = [
   { icon: Sparkles, label: 'AI-Powered', desc: 'Gemini auto-categorizes every task', color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-950/50' },
@@ -14,6 +16,7 @@ const features = [
 
 export default function LoginPage({ theme, onToggleTheme }) {
   const [loading, setLoading] = useState(false);
+  const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL;
   // NEW: State to track Admin vs User choice
   const [selectedRole, setSelectedRole] = useState('user'); 
   const handleGoogleLogin = async () => {
@@ -21,10 +24,11 @@ export default function LoginPage({ theme, onToggleTheme }) {
     try {
       
       const provider = new GoogleAuthProvider();
-     const result = await signInWithPopup(auth, provider);
-      const userEmail = result.user.email;
       provider.addScope('email');
-      provider.setCustomParameters({ prompt: 'select_account' });
+    provider.addScope('profile');
+    provider.setCustomParameters({ prompt: 'select_account' });
+     const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
     
     if (selectedRole === 'admin'&& userEmail !== ADMIN_EMAIL) {
@@ -36,6 +40,15 @@ export default function LoginPage({ theme, onToggleTheme }) {
       setLoading(false);
       return;
     }
+    // This creates or updates the user document in your 'users' collection
+    await setDoc(doc(db, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      role: selectedRole,
+      lastLogin: serverTimestamp()
+    }, { merge: true });
       
       // NEW: Save role to storage so App.js knows what permissions to give
       localStorage.setItem('user-role', selectedRole);
