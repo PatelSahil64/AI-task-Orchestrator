@@ -24,14 +24,15 @@ export default function LoginPage({ theme, onToggleTheme }) {
     try {
       
       const provider = new GoogleAuthProvider();
-      provider.addScope('email');
-    provider.addScope('profile');
+     provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
     provider.setCustomParameters({ prompt: 'select_account' });
      const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      
 
     
-    if (selectedRole === 'admin'&& userEmail !== ADMIN_EMAIL) {
+    if (selectedRole === 'admin'&& user.email !== ADMIN_EMAIL) {
       toast.error("Unauthorized: This email is not registered as Admin.");
       await auth.signOut();
       localStorage.removeItem('user-role');
