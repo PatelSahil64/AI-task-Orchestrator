@@ -59,14 +59,6 @@ function CountdownBadge({ deadline }) {
       </span>
     );
   }
-  if (days <= 7) {
-    return (
-      <span className="flex items-center gap-1 text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/60 dark:border-yellow-800/40 rounded-full px-2 py-0.5">
-        <Clock className="w-3 h-3" />
-        {days}d left
-      </span>
-    );
-  }
   return (
     <span className="flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/50 border border-green-200/60 dark:border-green-800/40 rounded-full px-2 py-0.5">
       <Clock className="w-3 h-3" />
@@ -74,6 +66,7 @@ function CountdownBadge({ deadline }) {
     </span>
   );
 }
+
 export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly }) {
   const isCompleted = task.status === 'completed';
   const [isEditing, setIsEditing] = useState(false);
@@ -86,8 +79,11 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly })
 
   const saveEdit = () => {
     const trimmed = editText.trim();
-    if (trimmed && trimmed !== task.title) onEdit(task.id, trimmed);
-    else setEditText(task.title);
+    if (trimmed && trimmed !== task.title && typeof onEdit === 'function') {
+      onEdit(task.id, trimmed);
+    } else {
+      setEditText(task.title);
+    }
     setIsEditing(false);
   };
 
@@ -98,15 +94,16 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly })
 
   return (
     <motion.div
-      // ... (keep existing motion properties)
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       className={`group relative flex flex-col bg-card border rounded-xl p-5 transition-all duration-300 ${
         isCompleted
           ? 'border-border opacity-60'
           : 'border-border hover:border-indigo-200 dark:hover:border-indigo-700/60 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/8'
       }`}
     >
-      {/* Action buttons */}
-      {/* 1. HIDE ACTION BUTTONS IF READONLY */}
       {!readOnly && (
         <div className="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           {!isCompleted && !isEditing && (
@@ -126,7 +123,6 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly })
         </div>
       )}
 
-      {/* Badges */}
       <div className="flex items-center gap-2 mb-3 flex-wrap pr-14">
         <span className={`px-2.5 py-1 rounded-full text-xs font-bold border uppercase tracking-wide ${CATEGORY_STYLES[task.category] || 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300'}`}>
           {task.category}
@@ -137,11 +133,9 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly })
         </span>
       </div>
 
-      {/* Inline edit or title */}
       {isEditing ? (
         <div className="mb-3 pr-2">
           <textarea
-            data-testid={`edit-input-${task.id}`}
             ref={inputRef}
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
@@ -151,73 +145,54 @@ export default function TaskCard({ task, onToggle, onDelete, onEdit, readOnly })
             }}
             rows={2}
             className="w-full resize-none text-sm font-medium bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-300 dark:border-indigo-700 rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
-            style={{ fontFamily: 'Inter, sans-serif' }}
           />
           <div className="flex items-center gap-2 mt-2">
-            <button
-              data-testid={`save-edit-${task.id}`}
-              onClick={saveEdit}
-              className="flex items-center gap-1 text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 py-1.5 transition-colors"
-            >
+            <button onClick={saveEdit} className="flex items-center gap-1 text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 py-1.5">
               <Check className="w-3 h-3" /> Save
             </button>
-            <button
-              data-testid={`cancel-edit-${task.id}`}
-              onClick={cancelEdit}
-              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground bg-secondary hover:bg-accent rounded-lg px-3 py-1.5 transition-colors"
-            >
+            <button onClick={cancelEdit} className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground bg-secondary hover:bg-accent rounded-lg px-3 py-1.5">
               <XIcon className="w-3 h-3" /> Cancel
             </button>
           </div>
         </div>
       ) : (
         <p
-          data-testid={`task-title-${task.id}`}
-          onClick={() => !isCompleted && setIsEditing(true)}
-          className={`text-sm font-medium leading-relaxed mb-2 transition-colors duration-200 ${
-            isCompleted
-              ? 'line-through text-muted-foreground'
-              : 'text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 cursor-text'
+          onClick={() => !isCompleted && !readOnly && setIsEditing(true)}
+          className={`text-sm font-medium leading-relaxed mb-2 ${
+            isCompleted ? 'line-through text-muted-foreground' : 'text-foreground cursor-text'
           }`}
-          style={{ fontFamily: 'Inter, sans-serif' }}
-          title={isCompleted ? '' : 'Click to edit'}
         >
           {task.title}
         </p>
       )}
 
-      {/* Change this section in TaskCard.jsx */}
-{task.originalRaw && !isCompleted && !isEditing && (
-  <div className="flex items-start gap-1.5 mb-3">
-    <Sparkles className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
-    <p className="text-xs text-muted-foreground italic leading-relaxed">
-      Note: {task.originalRaw}
-    </p>
-  </div>
-)}
+      {task.originalRaw && !isCompleted && !isEditing && (
+        <div className="flex items-start gap-1.5 mb-3">
+          <Sparkles className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-muted-foreground italic leading-relaxed">
+            Note: {task.originalRaw}
+          </p>
+        </div>
+      )}
 
-      {/* Footer */}
-     {/* 2. UPDATED FOOTER WITH COUNTDOWN */}
       <div className="flex items-center justify-between mt-auto pt-3 border-t border-border gap-2 flex-wrap">
-  <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           {task.suggestedDeadline && task.suggestedDeadline !== 'TBD' && (
-      <>
-      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-        <Calendar className="w-3 h-3" />
-        {task.suggestedDeadline}
-      </span>
-      
-      {/* The badge will now only show if a valid date is present */}
-      {!isCompleted && <CountdownBadge deadline={task.suggestedDeadline} />}
-    </>
-  )}
-</div>
+            <>
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Calendar className="w-3 h-3" />
+                {task.suggestedDeadline}
+              </span>
+              {!isCompleted && <CountdownBadge deadline={task.suggestedDeadline} />}
+            </>
+          )}
+        </div>
 
- {!readOnly && (
+        {!readOnly && (
           <button
             onClick={() => onToggle(task.id)}
-            className={`flex items-center gap-1.5 text-xs font-semibold ...`}
-           >
+            className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
             {isCompleted
               ? <><CheckCircle2 className="w-4 h-4 text-green-500" /> Done</>
               : <><Circle className="w-4 h-4" /> Mark done</>
