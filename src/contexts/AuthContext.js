@@ -10,7 +10,6 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // Add this line to force the "Choose an account" popup
 provider.setCustomParameters({
   prompt: "select_account"
 });
@@ -20,7 +19,7 @@ const handleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     console.log("Success:", result.user.email);
   } catch (error) {
-    console.error("Error Code:", error.code); // Look for this in your console!
+    console.error("Error Code:", error.code); 
     console.error("Error Message:", error.message);
   }
 };
